@@ -273,6 +273,17 @@ let getSchema(schema: string) (overrideSchema: JToken option) =
         if File.Exists schema && schema.EndsWith ".json" then
             let content = File.ReadAllText schema
             JObject.Parse(content)
+        elif File.Exists schema && (schema.EndsWith ".yaml" || schema.EndsWith ".yml") then
+            let content = File.ReadAllText schema
+
+            let yamlDeserializer = new YamlDotNet.Serialization.Deserializer()
+            let jsonSerializer = new Newtonsoft.Json.JsonSerializer()
+            let yamlObject = yamlDeserializer.Deserialize(new StringReader(content))
+
+            let jsonWriter = new StringWriter()
+            jsonSerializer.Serialize(jsonWriter, yamlObject)
+
+            JObject.Parse(jsonWriter.ToString())
         elif File.Exists schema && schema.EndsWith ".xml" then
             Console.WriteLine "Detected local OData schema"
             let openApiJson = readLocalODataSchema schema
