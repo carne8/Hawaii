@@ -53,6 +53,7 @@
     <Compile Include="CodeGen.fs" />
     <Compile Include="Helpers.fs" />
     <Compile Include="Domain.fs" />
+    <Compile Include="Config.fs" />
     <Compile Include="OperationParameters.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

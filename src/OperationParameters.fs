@@ -46,7 +46,7 @@ let rec private cleanParamIdent (parameter: string) (parameters: OperationParame
             cleanedParam
 
 let rec private readParamType (target: Target) (schema: OpenApiSchema) : SynType =
-    if isNull schema then 
+    if isNull schema then
         if target = Target.FSharp
         then SynType.JToken()
         else SynType.Object()
@@ -82,7 +82,7 @@ let rec private readParamType (target: Target) (schema: OpenApiSchema) : SynType
     | _ ->
         SynType.String()
 
-let private isCancellationToken (parameter: OpenApiParameter) = 
+let private isCancellationToken (parameter: OpenApiParameter) =
     isNotNull parameter.Schema && isNotNull parameter.Schema.Reference && parameter.Schema.Reference.Id = "CancellationToken"
 
 let private processOperationParameters
@@ -150,7 +150,7 @@ let private processOperationParameters
         }
 
 let private processOperationRequestBody
-    (config: CodegenConfig)
+    (config: NormalizedCodegenConfig)
     (operation: OpenApiOperation)
     (parameters: OperationParameter seq)
     : OperationParameter list =
@@ -299,7 +299,7 @@ let private processOperationRequestBody
 let operationParameters
     (operation: OpenApiOperation)
     (pathInfoParameters: OpenApiParameter seq)
-    (config: CodegenConfig)
+    (config: NormalizedCodegenConfig)
     : OperationParameter list =
 
     let opParameters =
@@ -309,7 +309,7 @@ let operationParameters
             | None -> opParameters
             | Some opParameter -> opParameter :: opParameters) []
         |> List.rev
-    
+
     let rqParameters =
         processOperationRequestBody config operation opParameters
         |> List.rev

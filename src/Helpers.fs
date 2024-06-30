@@ -2,7 +2,6 @@
 module Helpers
 
 open System
-open Fantomas
 open Microsoft.OpenApi.Models
 open System.Linq
 
@@ -57,3 +56,26 @@ let isEmptySchema (schema: OpenApiSchema) =
         && schema.AllOf.Count = 0
         && schema.AnyOf.Count = 0
     )
+
+type Newtonsoft.Json.Linq.JObject with
+    static member ParseYaml (yaml: string) =
+        let yamlDeserializer =
+            let builder = new YamlDotNet.Serialization.DeserializerBuilder()
+            builder.Build()
+        let stringReader = new IO.StringReader(yaml)
+
+        stringReader
+        |> yamlDeserializer.Deserialize
+        |> Newtonsoft.Json.Linq.JObject.FromObject
+
+module System =
+    module IO =
+        open System.IO
+
+        module Path =
+            let getAbsolutePath current (path: string) =
+                match Path.IsPathRooted path with
+                | true -> path
+                | false ->
+                    Path.Combine(current, path)
+                    |> Path.GetFullPath
